@@ -6,11 +6,11 @@ import '../styles/components/Header.scss';
 
 const Header = () => {
   return (
-    <header className='Header'>
+    <div className='Header'>
       <Place />
       <Search />
       <Settings />
-    </header>
+    </div>
   );
 };
 

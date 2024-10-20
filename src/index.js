@@ -1,25 +1,18 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client';
-import Header from './components/Header';
-import Main from './components/Main';
-import './styles/components/App.scss';
-import "bootstrap-icons/font/bootstrap-icons.css";
+import ReactDOM from 'react-dom/client'; // Ensure you're using the right import
+import App from './App'; // Import the main App component
+import { ThemeProvider } from './context/theme.context'; // Import your theme context provider
+import { WeatherProvider } from './context/weather.context'; // Import your weather context provider
+import './styles/components/App.scss'; // Import global styles (adjust path as necessary)
 
-const App = () => {
-  const dark = true;
-  return (
-    <div className={`App-${dark ? "dark" : "light"}`}>
-      <Header />
-      <Main />
-    </div>
-  );
-};
+const root = ReactDOM.createRoot(document.getElementById('root')); // Get the root element
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <ThemeProvider>
+      <WeatherProvider>
+        <App /> {/* Render the App component */}
+      </WeatherProvider>
+    </ThemeProvider>
   </React.StrictMode>
 );
-
-export default App;

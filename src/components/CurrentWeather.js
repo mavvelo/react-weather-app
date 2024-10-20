@@ -1,14 +1,13 @@
-import React from 'react';
-import { getCurrentWeather } from '../api'; // Use named import
+import { useContext } from 'react';
+import WeatherContext from '../context/weather.context';
+import WeatherIcon from './WeatherIcon';
 import '../styles/components/CurrentWeather.scss';
 
-const CurrentWeather = () => {
-  const data = getCurrentWeather();
-  console.log(data);
-
+function CurrentWeather({ data }) {
   const {
     cloud_cover,
     feels_like,
+    humidity,
     icon_num,
     precipitation,
     summary,
@@ -16,51 +15,51 @@ const CurrentWeather = () => {
     uv_index,
     visibility,
     wind,
-    humidity,
   } = data;
+  const { units } = useContext(WeatherContext);
 
-  const otherInfoWidget = [
+  const otherInfoWidgets = [
     {
       id: 0,
       icon: 'droplet',
       name: 'Precipitation',
       value: Math.round(precipitation.total),
-      unit: 'in/h',
+      unit: units.precipitation,
     },
     {
       id: 1,
       icon: 'wind',
       name: 'Wind',
       value: Math.round(wind.speed),
-      unit: 'mph',
+      unit: units.wind_speed,
     },
     {
       id: 2,
       icon: 'moisture',
       name: 'Humidity',
       value: Math.round(humidity),
-      unit: '%',
+      unit: units.humidity,
     },
     {
       id: 3,
       icon: 'sunglasses',
       name: 'UV index',
       value: Math.round(uv_index),
-      unit: '',
+      unit: units.uv_index,
     },
     {
       id: 4,
       icon: 'clouds-fill',
-      name: 'Cloud cover',
+      name: 'Clouds cover',
       value: Math.round(cloud_cover),
-      unit: '%',
+      unit: units.cloud_cover,
     },
     {
       id: 5,
       icon: 'eye',
       name: 'Visibility',
       value: Math.round(visibility),
-      unit: 'mi',
+      unit: units.visibility,
     },
   ];
 
@@ -68,36 +67,38 @@ const CurrentWeather = () => {
     <div className='CurrentWeather'>
       <div className='temperature'>
         <div className='weather-icon'>
-          <img
-            src={`public/dist/weather_icons/set4/big/${icon_num}.png`}
-            alt={summary}
-          />
+          <WeatherIcon iconNumber={icon_num} summary={summary} />
         </div>
         <div className='value'>
-          <div className='real'>{temperature} °C</div>
-          <div className='feels-like'>Feels like {feels_like} °C</div>
+          <div className='real'>
+            {Math.round(temperature)} {units.temperature}
+          </div>
+          <div className='feels_like'>
+            feels like {Math.round(feels_like)} {units.temperature}
+          </div>
         </div>
         <div className='summary'>{summary}</div>
       </div>
       <div className='other-infos'>
-        {otherInfoWidget.map(({ id, icon, name, value, unit }) => (
+        {otherInfoWidgets.map(({ id, name, icon, value, unit }) => (
           <div className='widget' key={id}>
             <div className='widget-container'>
               <div className='info'>
                 <div className='icon'>
                   <i className={`bi bi-${icon}`}></i>
                 </div>
-                <div className='details'>
-                  <span>{name}</span>
-                  <span>{value}{unit}</span>
+                <div className='value'>
+                  {value} {unit}
                 </div>
               </div>
+              <div className='name'>{name}</div>
             </div>
           </div>
         ))}
       </div>
     </div>
   );
-};
+}
 
 export default CurrentWeather;
+

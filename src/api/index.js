@@ -1,7 +1,52 @@
-import CurrentWeather from "./current-weather.json";
+import axios from 'axios';
 
-export function getCurrentWeather(){
-    return CurrentWeather.current;
+const API_KEY = process.env.REACT_APP_API_KEY;
+
+export async function getWeatherData(endpoint, place_id, measurementSystem) {
+  const options = {
+    method: 'GET',
+    url: `https://ai-weather-by-meteosource.p.rapidapi.com/${endpoint}`,
+    params: {
+      place_id,
+      language: 'en',
+      units: measurementSystem,
+    },
+    headers: {
+      'x-rapidapi-key': API_KEY,
+      'x-rapidapi-host': 'ai-weather-by-meteosource.p.rapidapi.com',
+    },
+  };
+
+  try {
+    const response = await axios.request(options);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching weather data:', error.message);
+    // Optionally, you can throw an error to handle it in the component
+    throw new Error('Could not fetch weather data. Please try again later.');
+  }
 }
 
-export default CurrentWeather
+export async function searchPlaces(text) {
+  const options = {
+    method: 'GET',
+    url: 'https://ai-weather-by-meteosource.p.rapidapi.com/find_places',
+    params: {
+      text,
+      language: 'en',
+    },
+    headers: {
+      'x-rapidapi-key': API_KEY,
+      'x-rapidapi-host': 'ai-weather-by-meteosource.p.rapidapi.com',
+    },
+  };
+
+  try {
+    const response = await axios.request(options);
+    return response.data;
+  } catch (error) {
+    console.error('Error searching for places:', error.message);
+    // Optionally, you can throw an error to handle it in the component
+    throw new Error('Could not search for places. Please try again later.');
+  }
+}
